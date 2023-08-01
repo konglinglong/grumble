@@ -37,14 +37,18 @@ type Context struct {
 
 	// Cmd is the currently executing command.
 	Command *Command
+
+	// the raw command line string.
+	OriginCommand string
 }
 
-func newContext(a *App, cmd *Command, flags FlagMap, args ArgMap) *Context {
+func newContext(a *App, cmd *Command, OriginCmd string, flags FlagMap, args ArgMap) *Context {
 	return &Context{
-		App:     a,
-		Command: cmd,
-		Flags:   flags,
-		Args:    args,
+		App:           a,
+		Command:       cmd,
+		Flags:         flags,
+		Args:          args,
+		OriginCommand: OriginCmd,
 	}
 }
 

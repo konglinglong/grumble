@@ -235,7 +235,7 @@ func (a *App) addCommand(cmd *Command, addHelpFlag bool) {
 }
 
 // RunCommand runs a single command.
-func (a *App) RunCommand(args []string) error {
+func (a *App) RunCommand(args []string, OriginCmd string) error {
 	// Parse the arguments string and obtain the command path to the root,
 	// and the command flags.
 	cmds, fg, args, err := a.commands.parse(args, a.flagMap, false)
@@ -267,7 +267,7 @@ func (a *App) RunCommand(args []string) error {
 	}
 
 	// Create the context and pass the rest args.
-	ctx := newContext(a, cmd, fg, cmdArgMap)
+	ctx := newContext(a, cmd, OriginCmd, fg, cmdArgMap)
 
 	// Run the command.
 	err = cmd.Run(ctx)
@@ -383,7 +383,7 @@ func (a *App) RunWithReadline(rl *readline.Instance) (err error) {
 
 	// Check if a command chould be executed in non-interactive mode.
 	if !a.isShell {
-		return a.RunCommand(args)
+		return a.RunCommand(args, strings.Join(os.Args, " "))
 	}
 
 	// Assign readline instance
@@ -482,7 +482,7 @@ Loop:
 		}
 
 		// Execute the command.
-		err = a.RunCommand(args)
+		err = a.RunCommand(args, line)
 		if err != nil {
 			a.PrintError(err)
 			// Do not continue the Loop here. We want to handle command changes below.
